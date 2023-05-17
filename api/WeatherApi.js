@@ -1,9 +1,11 @@
 import axios from "axios";
+const ApiKey = "d4ac05b2985d4a3d8f3152637231605";
 
 const forecastEndpoint = (params) =>
-  `https://api.weatherapi.com/v1/forecast.json?key=${process.env.CONNECT_TO_API}&q=${params.cityName}&days=${params.days}`;
+  `https://api.weatherapi.com/v1/forecast.json?key=${ApiKey}&q=${params.cityName}&days=${params.days}`;
+
 const locationsEndpoint = (params) =>
-  `https://api.weatherapi.com/v1/search.json?key=${process.env.CONNECT_TO_API}&q=${params.cityName}`;
+  `https://api.weatherapi.com/v1/search.json?key=${ApiKey}&q=${params.cityName}`;
 
 const apiCall = async (endpoint) => {
   const options = {
@@ -21,11 +23,9 @@ const apiCall = async (endpoint) => {
 };
 
 export const fetchWeatherForecast = (params) => {
-  let forecastUrl = forecastEndpoint(params);
-  return apiCall(forecastUrl);
+  return apiCall(forecastEndpoint(params));
 };
 
 export const fetchLocations = (params) => {
-  let locationsUrl = locationsEndpoint(params);
-  return apiCall(locationsUrl);
+  return apiCall(locationsEndpoint(params));
 };
