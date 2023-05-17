@@ -19,6 +19,7 @@ import { fetchLocations, fetchWeatherForecast } from "../api/WeatherApi";
 import * as Animatable from "react-native-animatable";
 import { debounce } from "lodash";
 import { weatherImages } from "../utils";
+import { getData, storeData } from "../utils/asyncStorage";
 
 const HomeScreen = () => {
   const [IsSearch, setIsSearch] = useState(false);
@@ -38,6 +39,7 @@ const HomeScreen = () => {
     }).then((data) => {
       setWeatherGetData(data);
       setLoder(false);
+      storeData("city", loctions.name);
       console.log(data);
     });
   };
@@ -53,8 +55,13 @@ const HomeScreen = () => {
   const searchCityAfterTime = useCallback(debounce(SearchCity, 1200), []);
 
   const fetcData = async () => {
+    let myCityLocalStorage = await getData("city");
+    let cityName = "London";
+    if (myCityLocalStorage) {
+      cityName = myCityLocalStorage;
+    }
     fetchWeatherForecast({
-      cityName: "London",
+      cityName,
       day: "7",
     }).then((data) => {
       setWeatherGetData(data);
@@ -136,6 +143,7 @@ const HomeScreen = () => {
               </Animatable.View>
             ) : null}
           </View>
+
           {/* forecast section */}
           <View className="mx-4 flex justify-around flex-1 mb-2">
             {/* loctions */}
@@ -145,6 +153,7 @@ const HomeScreen = () => {
                 {" " + location?.country}
               </Text>
             </Text>
+
             {/* weather image */}
             <View className="flex-row justify-center">
               <Image
@@ -152,6 +161,7 @@ const HomeScreen = () => {
                 className="w-52 h-52"
               />
             </View>
+
             {/* degree celcius */}
             <View className="space-y-2">
               <Text className="text-center font-bold text-white text-6xl ml-5">
@@ -161,6 +171,7 @@ const HomeScreen = () => {
                 {current?.condition?.text}
               </Text>
             </View>
+
             {/* other status */}
             <View className="flex-row justify-between mx-4">
               <View className="flex-row space-x-2 items-center">
@@ -187,11 +198,12 @@ const HomeScreen = () => {
                   source={require("../assets/sunOutLine.png")}
                 />
                 <Text className="text-white font-semibold text-base">
-                  {location?.localtime[1]} Time
+                  {weatherGetData?.forecast?.forecastday[0]?.astro?.sunrise}{" "}
                 </Text>
               </View>
             </View>
           </View>
+
           {/* forecast section to the next days */}
           <View className="mb-2 space-y-3">
             <View className="flex-row items-center mx-5 space-x-2">

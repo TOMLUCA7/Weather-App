@@ -1,5 +1,5 @@
 import axios from "axios";
-const ApiKey = "d4ac05b2985d4a3d8f3152637231605";
+const ApiKey = process.env.API_KEY; // Please enter your api
 
 const forecastEndpoint = (params) =>
   `https://api.weatherapi.com/v1/forecast.json?key=${ApiKey}&q=${params.cityName}&days=${params.days}`;
